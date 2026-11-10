@@ -2,7 +2,7 @@
 
 A single product page for the **Linden shelf**. The page loads the product and its prices from a small API inside the app. **Add to order** opens an order sheet where you choose fulfillment and extras and watch the total update live. A valid submit shows a confirmation. There is no database, account, or payment.
 
-**Live demo:** _add the Vercel URL here_
+**Live demo:** https://quixta-assignment-five.vercel.app
 
 ## Getting started
 
