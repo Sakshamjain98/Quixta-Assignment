@@ -129,7 +129,8 @@ src/
 ### Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Sakshamjain98/Quixta-Assignment.git
+cd Quixta-Assignment
 npm install
 ```
 
@@ -202,7 +203,6 @@ AI coding assistance was used during this assignment to accelerate implementatio
 - Reviewed the assignment requirements and translated them into implementation tasks.
 - Defined the UI direction, design approach, and overall application structure.
 - Guided the implementation based on the specified business rules and expected user flows.
-- Implemented the initial React Hook Form and Zod validation setup.
 - Reviewed the generated components, code structure, and validation logic.
 - Reviewed and refined the UI for responsiveness, usability, and accessibility.
 - Reviewed the test cases and verified the application behaviour locally.
