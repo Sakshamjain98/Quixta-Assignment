@@ -156,24 +156,22 @@ src/
 
 ## AI tools
 
-**Tools:** Claude Code (Anthropic's coding assistant), used in the terminal.
+**Tool:** Claude, an AI coding assistant
 
-**What it was used for:**
-- Scaffolding the project and configuring Vitest
-- The components and styling
-- The order calculations and the zod schema
-- The route handler, the Redux store setup, and the performance and security changes
-- The tests
+**What I used it for:**
+- Setting up the project and the test configuration
+- Components and styling
+- Tests
 - A first draft of this README
 
 **What I did:**
-- Read the brief and turned it into tasks
-- Set the direction and structure
-- Reviewed the generated code, the validation rules, and the tests
-- Checked the app in the browser at both widths and in each API mode
-- Prepared the submission
+- Read the brief and broke it down into tasks
+- The route handler, the Redux store, and the performance and security changes
+- Worked out the business logic (the pricing, Assembly only with Delivery, the validation rules and messages) and built it with help from the AI tool
+- Decided the structure and the design direction
+- Reviewed the code and the tests, and checked the app in the browser at both widths and in each API mode
 
-**One thing I changed or threw away:** the first version it gave me had a right-side drawer on desktop, a stock product photo, and prices hard-coded in a constants file that the components imported. I threw all three away to follow the spec: the dialog is now a centred modal of at most 480px, the image is a grey placeholder, and prices exist only in the module that `/api/product` returns. Components receive them as data.
+**Something I changed:** the first version had prices hard-coded in a constants file that the components imported. I moved them so they exist only in the module `/api/product` returns, and the components now get them as data.
 
 ## Time spent
 
