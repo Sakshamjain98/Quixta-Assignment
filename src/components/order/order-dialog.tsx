@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import type { Product } from "@/data/product";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { OrderForm } from "./order-form";
 import { ORDER_DIALOG_TITLE_ID } from "./dialog-ids";
+
+// The form (react-hook-form + zod) is only downloaded when it's needed, keeping it out of the first page load.
+const loadOrderForm = () => import("./order-form");
+const OrderForm = lazy(() => loadOrderForm().then((module) => ({ default: module.OrderForm })));
 
 interface OrderDialogProps {
   product: Product;
@@ -24,7 +27,13 @@ export function OrderDialog({ product }: OrderDialogProps) {
 
   return (
     <>
-      <Button className="w-full md:w-auto" onClick={() => setIsOpen(true)}>
+      {/* Start the download on hover or focus, so the form is usually ready by the time of the click. */}
+      <Button
+        className="w-full md:w-auto"
+        onPointerEnter={loadOrderForm}
+        onFocus={loadOrderForm}
+        onClick={() => setIsOpen(true)}
+      >
         Add to order
       </Button>
 
@@ -44,7 +53,17 @@ export function OrderDialog({ product }: OrderDialogProps) {
       >
         {/* Grab handle: signals a bottom sheet on mobile. Decorative only. */}
         <span aria-hidden className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-full bg-disabled md:hidden" />
-        {isOpen && <OrderForm product={product} onClose={close} />}
+        {isOpen && (
+          <Suspense
+            fallback={
+              <p role="status" className="px-6 py-10 text-center text-muted">
+                Loading…
+              </p>
+            }
+          >
+            <OrderForm product={product} onClose={close} />
+          </Suspense>
+        )}
       </dialog>
     </>
   );

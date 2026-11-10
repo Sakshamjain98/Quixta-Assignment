@@ -12,6 +12,7 @@ describe("GET /api/product", () => {
   it("returns the product when PRODUCT_API_MODE is unset", async () => {
     const res = await GET();
     expect(res.status).toBe(200);
+    expect(res.headers.get("Cache-Control")).toContain("s-maxage=60");
     expect(await res.json()).toEqual(PRODUCT);
   });
 
@@ -19,6 +20,7 @@ describe("GET /api/product", () => {
     vi.stubEnv("PRODUCT_API_MODE", "error");
     const res = await GET();
     expect(res.status).toBe(500);
+    expect(res.headers.get("Cache-Control")).toBe("no-store");
     expect(await res.json()).toEqual({ error: "unavailable" });
   });
 
@@ -34,6 +36,8 @@ describe("GET /api/product", () => {
     await vi.advanceTimersByTimeAsync(1999);
     expect(settled).toBe(false);
     await vi.advanceTimersByTimeAsync(1);
-    expect((await pending).status).toBe(200);
+    const res = await pending;
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Cache-Control")).toBe("no-store");
   });
 });

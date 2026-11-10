@@ -55,7 +55,8 @@ export function OrderForm({ product, onClose }: OrderFormProps) {
         <h2 id={ORDER_DIALOG_TITLE_ID} className="pr-10 text-xl font-semibold">
           Configure your order
         </h2>
-        <IconButton aria-label="Close" onClick={onClose} className="absolute top-3 right-3">
+        {/* autoFocus: the form can mount after showModal() (lazy load), so move focus in explicitly. */}
+        <IconButton aria-label="Close" onClick={onClose} className="absolute top-3 right-3" autoFocus>
           <X className="size-5" strokeWidth={1.6} aria-hidden />
         </IconButton>
       </header>
