@@ -2,9 +2,10 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import type { ProductExtra, ProductOption } from "@/data/product";
 import type { OrderInput } from "@/features/order/order.schema";
 import { isExtraAvailable } from "@/features/order/order.calculations";
-import { formatAddOnPrice } from "@/lib/format-currency";
+import { formatCurrency } from "@/lib/format-currency";
 import { OptionCard } from "@/components/ui/option-card";
 import { FieldError } from "@/components/ui/field-error";
+import { getOptionIcon } from "./option-icon";
 
 interface ExtrasSelectorProps {
   extras: ProductExtra[];
@@ -17,12 +18,9 @@ interface ExtrasSelectorProps {
 export function ExtrasSelector({ extras, fulfillmentOptions, fulfillment, register, errors }: ExtrasSelectorProps) {
   return (
     <fieldset>
-      <legend className="mb-3 text-sm font-medium">
-        Extras <span className="font-normal text-muted">· optional</span>
-      </legend>
-      <div className="grid gap-3">
+      <legend className="mb-2 font-semibold">Extras</legend>
+      <div className="grid gap-2.5">
         {extras.map((extra) => {
-          const available = isExtraAvailable(extra, fulfillment);
           const required = fulfillmentOptions.find((option) => option.code === extra.requires);
           const error = errors?.[extra.code]?.message;
 
@@ -32,9 +30,10 @@ export function ExtrasSelector({ extras, fulfillmentOptions, fulfillment, regist
                 id={`extra-${extra.code}`}
                 type="checkbox"
                 title={extra.label}
-                price={formatAddOnPrice(extra.priceCents)}
-                description={available || !required ? undefined : `Available with ${required.label} only`}
-                disabled={!available}
+                description={required ? `Available only with ${required.label}` : undefined}
+                price={formatCurrency(extra.priceCents)}
+                icon={getOptionIcon(extra.code)}
+                disabled={!isExtraAvailable(extra, fulfillment)}
                 aria-invalid={error ? true : undefined}
                 {...register(`extras.${extra.code}`)}
               />

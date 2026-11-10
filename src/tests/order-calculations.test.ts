@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { PRODUCT } from "@/data/product";
-import { getLineItems, getOrderTotalCents, type OrderSelection } from "@/features/order/order.calculations";
+import { getOrderTotalCents, getSelectedOptions, type OrderSelection } from "@/features/order/order.calculations";
 import { createOrderSchema } from "@/features/order/order.schema";
-import { formatAddOnPrice, formatCurrency } from "@/lib/format-currency";
+import { formatCurrency } from "@/lib/format-currency";
 
 describe("getOrderTotalCents", () => {
   const cases: Array<[string, OrderSelection, string]> = [
@@ -18,9 +18,10 @@ describe("getOrderTotalCents", () => {
     expect(formatCurrency(getOrderTotalCents(PRODUCT, selection))).toBe(expected);
   });
 
-  it("lists only what was selected", () => {
-    const labels = getLineItems(PRODUCT, { fulfillment: "pickup", extras: { hardware: true } }).map((i) => i.label);
-    expect(labels).toEqual(["Linden shelf", "Pickup", "Hardware kit"]);
+  it("returns only what was selected", () => {
+    const { fulfillment, extras } = getSelectedOptions(PRODUCT, { fulfillment: "pickup", extras: { hardware: true } });
+    expect(fulfillment?.label).toBe("Pickup");
+    expect(extras.map((extra) => extra.label)).toEqual(["Hardware kit"]);
   });
 });
 
@@ -48,9 +49,8 @@ describe("order schema", () => {
 });
 
 describe("formatting", () => {
-  it("formats cents as whole-dollar USD and add-on prices", () => {
+  it("formats cents as whole-dollar USD", () => {
     expect(formatCurrency(27500)).toBe("$275");
-    expect(formatAddOnPrice(0)).toBe("Free");
-    expect(formatAddOnPrice(2500)).toBe("+$25");
+    expect(formatCurrency(0)).toBe("$0");
   });
 });

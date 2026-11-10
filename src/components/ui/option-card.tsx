@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface OptionCardProps extends Omit<ComponentProps<"input">, "type" | "id"> {
@@ -6,6 +7,7 @@ interface OptionCardProps extends Omit<ComponentProps<"input">, "type" | "id"> {
   type: "radio" | "checkbox";
   title: string;
   price: string;
+  icon: LucideIcon;
   description?: string;
 }
 
@@ -18,19 +20,17 @@ const indicator = {
  * A selectable row wrapping a real radio or checkbox input, so the whole row is
  * clickable while keyboard, screen-reader, and form behaviour stay native.
  */
-export function OptionCard({ id, type, title, price, description, ...inputProps }: OptionCardProps) {
+export function OptionCard({ id, type, title, price, icon: Icon, description, ...inputProps }: OptionCardProps) {
   const describedBy = description ? `${id}-price ${id}-description` : `${id}-price`;
 
   return (
     <label
       htmlFor={id}
       className={cn(
-        "group flex min-h-14 cursor-pointer items-center gap-4 rounded-xl border border-line bg-surface px-4 py-3 transition-[border-color,box-shadow] duration-200",
-        "hover:border-line-strong",
-        // Border + ring reads as a 2px outline without shifting layout.
-        "has-checked:border-primary has-checked:ring-1 has-checked:ring-primary",
-        "has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink",
-        "has-disabled:cursor-not-allowed has-disabled:border-line has-disabled:bg-canvas",
+        "group flex min-h-12 cursor-pointer items-center gap-3 rounded-lg border border-line bg-surface px-3.5 py-2.5 transition-colors duration-150",
+        "hover:border-line-strong has-checked:border-primary/50 has-checked:bg-primary-soft",
+        "has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-primary",
+        "has-disabled:cursor-not-allowed has-disabled:bg-canvas has-disabled:hover:border-line",
       )}
     >
       <input
@@ -46,18 +46,20 @@ export function OptionCard({ id, type, title, price, description, ...inputProps 
         {...inputProps}
       />
 
-      <span className="min-w-0 flex-1">
+      <Icon className="size-5 shrink-0 text-ink group-has-disabled:text-muted" strokeWidth={1.6} aria-hidden />
+
+      <span className="min-w-0 flex-1 leading-tight">
         <span id={`${id}-title`} className="block font-medium group-has-disabled:text-muted">
           {title}
         </span>
         {description && (
-          <span id={`${id}-description`} className="block text-sm text-muted">
+          <span id={`${id}-description`} className="mt-0.5 block text-xs text-muted">
             {description}
           </span>
         )}
       </span>
 
-      <span id={`${id}-price`} className="shrink-0 tabular-nums group-has-disabled:text-muted">
+      <span id={`${id}-price`} className="shrink-0 font-semibold tabular-nums group-has-disabled:text-muted">
         {price}
       </span>
     </label>

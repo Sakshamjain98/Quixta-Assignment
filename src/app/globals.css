@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #f8f7f4;
+  --color-canvas: #f6f7f6;
   --color-surface: #ffffff;
   --color-ink: #252522;
   --color-muted: #5f5e58;
   --color-primary: #1f4d3a;
   --color-primary-hover: #173b2c;
-  --color-line: #e5e3dd;
+  --color-primary-soft: #eaf3ec;
+  --color-placeholder: #e4e6ea;
+  --color-line: #e3e6e3;
   /* Unselected control outlines need 3:1 against white, which --color-line can't give. */
   --color-line-strong: #a3a199;
   --color-disabled: #d8d7d1;
@@ -23,6 +25,14 @@
 body {
   background: var(--color-canvas);
   color: var(--color-ink);
+}
+
+/* Product card: white with soft green washes in the corners, as in the design. */
+.product-card {
+  background:
+    radial-gradient(60% 80% at 100% 0%, rgb(31 77 58 / 0.06), transparent 70%),
+    radial-gradient(50% 70% at 0% 100%, rgb(31 77 58 / 0.05), transparent 70%),
+    var(--color-surface);
 }
 
 /* Keep the page from scrolling behind an open modal. */

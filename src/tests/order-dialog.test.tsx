@@ -10,7 +10,7 @@ async function openOrderDialog() {
   await user.click(screen.getByRole("button", { name: "Add to order" }));
   const dialog = within(await screen.findByRole("dialog"));
   // The form is lazy-loaded, so wait for it like a user would.
-  await dialog.findByRole("heading", { name: "Configure your order" });
+  await dialog.findByRole("heading", { name: "Add to order" });
   return { user, dialog };
 }
 
@@ -66,7 +66,7 @@ describe("Order dialog", () => {
 
     await user.click(screen.getByRole("button", { name: "Add to order" }));
     const reopened = within(await screen.findByRole("dialog"));
-    await reopened.findByRole("heading", { name: "Configure your order" });
+    await reopened.findByRole("heading", { name: "Add to order" });
     expect(reopened.getByRole("radio", { name: "Pickup" })).not.toBeChecked();
     expect(reopened.getByTestId("order-total")).toHaveTextContent("$180");
   });

@@ -1,8 +1,9 @@
 import type { UseFormRegisterReturn } from "react-hook-form";
 import type { ProductOption } from "@/data/product";
-import { formatAddOnPrice } from "@/lib/format-currency";
+import { formatCurrency } from "@/lib/format-currency";
 import { OptionCard } from "@/components/ui/option-card";
 import { FieldError } from "@/components/ui/field-error";
+import { getOptionIcon } from "./option-icon";
 
 interface FulfillmentSelectorProps {
   options: ProductOption[];
@@ -13,10 +14,14 @@ interface FulfillmentSelectorProps {
 export function FulfillmentSelector({ options, field, error }: FulfillmentSelectorProps) {
   return (
     <fieldset aria-describedby={error ? "fulfillment-error" : undefined}>
-      <legend className="mb-3 text-sm font-medium">
-        Fulfillment <span className="font-normal text-muted">· required</span>
+      <legend className="mb-2 font-semibold">
+        Fulfillment{" "}
+        <span className="text-danger" aria-hidden>
+          *
+        </span>
+        <span className="sr-only">(required)</span>
       </legend>
-      <div className="grid gap-3">
+      <div className="grid gap-2.5 md:grid-cols-2">
         {options.map((option) => (
           <OptionCard
             key={option.code}
@@ -24,7 +29,9 @@ export function FulfillmentSelector({ options, field, error }: FulfillmentSelect
             type="radio"
             value={option.code}
             title={option.label}
-            price={formatAddOnPrice(option.priceCents)}
+            description={option.priceCents === 0 ? "No extra cost" : undefined}
+            price={formatCurrency(option.priceCents)}
+            icon={getOptionIcon(option.code)}
             {...field}
           />
         ))}

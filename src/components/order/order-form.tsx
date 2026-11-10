@@ -3,15 +3,15 @@
 import { useMemo, useState, type ChangeEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
+import { ShoppingCart, X } from "lucide-react";
 import type { Product } from "@/data/product";
 import { createOrderSchema, getDefaultOrderValues, type Order, type OrderInput } from "@/features/order/order.schema";
-import { getLineItems, getOrderTotalCents, isExtraAvailable } from "@/features/order/order.calculations";
+import { getOrderTotalCents, isExtraAvailable } from "@/features/order/order.calculations";
 import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { FulfillmentSelector } from "./fulfillment-selector";
 import { ExtrasSelector } from "./extras-selector";
-import { OrderSummary } from "./order-summary";
+import { OrderTotal } from "./order-total";
 import { OrderConfirmation } from "./order-confirmation";
 import { ORDER_DIALOG_TITLE_ID } from "./dialog-ids";
 
@@ -51,17 +51,17 @@ export function OrderForm({ product, onClose }: OrderFormProps) {
 
   return (
     <form noValidate onSubmit={handleSubmit(setSubmittedOrder)} className="flex min-h-0 flex-1 flex-col">
-      <header className="relative border-b border-line px-6 py-5">
-        <h2 id={ORDER_DIALOG_TITLE_ID} className="pr-10 text-xl font-semibold">
-          Configure your order
+      <header className="flex items-center justify-between gap-4 px-5 pt-4 pb-3 md:px-7 md:pt-6">
+        <h2 id={ORDER_DIALOG_TITLE_ID} className="text-2xl font-bold">
+          Add to order
         </h2>
         {/* autoFocus: the form can mount after showModal() (lazy load), so move focus in explicitly. */}
-        <IconButton aria-label="Close" onClick={onClose} className="absolute top-3 right-3" autoFocus>
-          <X className="size-5" strokeWidth={1.6} aria-hidden />
+        <IconButton aria-label="Close" onClick={onClose} className="-mr-2.5" autoFocus>
+          <X className="size-5" strokeWidth={1.8} aria-hidden />
         </IconButton>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-8 overflow-y-auto px-6 py-6">
+      <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-5 py-2 md:px-7">
         <FulfillmentSelector options={product.fulfillment} field={fulfillmentField} error={errors.fulfillment?.message} />
         <ExtrasSelector
           extras={product.extras}
@@ -72,9 +72,10 @@ export function OrderForm({ product, onClose }: OrderFormProps) {
         />
       </div>
 
-      <footer className="space-y-5 border-t border-line bg-canvas px-6 pt-5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-        <OrderSummary items={getLineItems(product, selection)} totalCents={getOrderTotalCents(product, selection)} />
+      <footer className="space-y-4 px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:px-7 md:pb-7">
+        <OrderTotal totalCents={getOrderTotalCents(product, selection)} />
         <Button type="submit" className="w-full">
+          <ShoppingCart className="size-5" strokeWidth={1.8} aria-hidden />
           Add to order
         </Button>
       </footer>
