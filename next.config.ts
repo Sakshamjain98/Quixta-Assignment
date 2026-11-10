@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    // 90 keeps the smooth wall in the product photo free of JPEG banding.
+    qualities: [75, 90],
+  },
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
