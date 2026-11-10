@@ -28,7 +28,10 @@ npm run lint
 | `slow` | waits 2 seconds, then answers normally |
 | anything else / unset | answers normally |
 
+Copy `.env.example` to `.env.local` and set the value there, or pass it inline:
+
 ```bash
+cp .env.example .env.local
 PRODUCT_API_MODE=slow npm run dev    # see "Loading product…"
 PRODUCT_API_MODE=error npm run dev   # see "Could not load the product" and Try again
 ```
@@ -53,7 +56,7 @@ The route handler returns the module `src/data/product.ts`, which is the only pl
 - **Validation.** `createOrderSchema(product)` builds the zod schema from the product:
   - Fulfillment is required. Without it, "Choose pickup or delivery" appears under the Fulfillment group and focus moves there.
   - Assembly with Pickup is rejected even though the UI disables that checkbox. That error appears under Assembly.
-- **Totals.** `getLineItems()` builds the breakdown and `getOrderTotalCents()` adds up those same items. The live summary and the confirmation both use them.
+- **Totals.** `getSelectedOptions()` returns the chosen fulfillment and extras, and `getOrderTotalCents()` adds them to the shelf price. The live total and the confirmation's summary both use them.
 - **Dialog.** A native `<dialog>` opened with `showModal()`. It traps focus, makes the page behind it inert, and closes on Escape without adding anything. The form only exists while the dialog is open, so every way of closing it (Escape, ×, **Back to product**) resets the form.
 - **Controls.** Every option is a real radio or checkbox inside a `<fieldset>` with a `<legend>`. The whole row is the label, so the entire row is clickable, and each row is at least 56px tall.
 
@@ -86,6 +89,15 @@ The route handler returns the module `src/data/product.ts`, which is the only pl
 | Dialog | Sheet fixed to the bottom, full width | Centred modal, max 480px wide |
 
 Primary buttons use `#1F4D3A` with white text, and error text is `#B42318`.
+
+**Visual design.** The spec table above sets the sizes and colours. On top of that:
+
+- The product sits in a white card with soft green corner washes, a "Wall Shelf" badge, and a placeholder showing an image icon and the product name.
+- Each option row has an icon. Selected rows get a light green background, and the two fulfillment options sit side by side in the modal.
+- The total sits in a green box.
+- The confirmation shows a check badge, separate Fulfillment and Extras sections, and an outlined **Back to product** button.
+
+Where a reference mock-up drew the name or price larger than the spec, I kept the spec sizes (24/32px and 20/24px).
 
 **768px–1023px:** I use the desktop layout from 768px. At that width each column is about 350px wide, which fits the placeholder and the text comfortably. Stacking them would push **Add to order** below the fold on a landscape tablet. A bottom sheet stretched across a tablet screen also leaves very wide option rows, so a centred 480px modal is easier to scan.
 
@@ -130,7 +142,8 @@ src/
 │   │   ├── order-form.tsx         react-hook-form, swaps to the confirmation
 │   │   ├── fulfillment-selector.tsx
 │   │   ├── extras-selector.tsx
-│   │   ├── order-summary.tsx
+│   │   ├── order-total.tsx        green total box (form and confirmation)
+│   │   ├── option-icon.tsx        maps option codes to icons (visual only)
 │   │   ├── order-confirmation.tsx
 │   │   └── dialog-ids.ts
 │   └── ui/                        button, icon-button, option-card, field-error
