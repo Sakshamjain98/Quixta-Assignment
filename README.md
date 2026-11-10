@@ -90,14 +90,15 @@ The route handler returns the module `src/data/product.ts`, which is the only pl
 
 Primary buttons use `#1F4D3A` with white text, and error text is `#B42318`.
 
-**Visual design.** The spec table above sets the sizes and colours. On top of that:
+**Visual design.** The spec table above sets the sizes and colours. Within it:
 
-- The product sits in a white card with soft green corner washes, a "Wall Shelf" badge, and a placeholder showing an image icon and the product name.
-- Each option row has an icon. Selected rows get a light green background, and the two fulfillment options sit side by side in the modal.
-- The total sits in a green box.
-- The confirmation shows a check badge, separate Fulfillment and Extras sections, and an outlined **Back to product** button.
-
-Where a reference mock-up drew the name or price larger than the spec, I kept the spec sizes (24/32px and 20/24px).
+- **Placeholder.** The grey 4:3 placeholder shows a quiet grey drawing of a plank floating on a wall, a nod to "hidden brackets". It is still a single `role="img"` named after the product.
+- **Type.** One typeface, Schibsted Grotesk, self-hosted with `next/font`. Prices use tabular figures.
+- **Colour.** White page, green-grey text, and the brief's `#1F4D3A` and `#B42318`. A pale leaf green (`#EEF4EC`) marks selected options and the receipt.
+- **Product page.** The content sits directly on the page, centred vertically on desktop. Below the button, a short list shows what can be chosen in the order sheet and what it costs, read from the API.
+- **Order sheet.** The subtitle shows the product name and price. Each section has a plain "Required" or "Optional" note. Rows are laid out as control, icon, label, then price; the selected row gets a green outline and tint. The total is a large figure above the button.
+- **Confirmation.** A green check, then a receipt: the fulfillment and each selected extra, then the total under a dashed rule, then an outlined **Back to product** button.
+- **Loading.** Keeps the page's footprint with a pulsing grey block, so nothing jumps when the product arrives.
 
 **768px–1023px:** I use the desktop layout from 768px. At that width each column is about 350px wide, which fits the placeholder and the text comfortably. Stacking them would push **Add to order** below the fold on a landscape tablet. A bottom sheet stretched across a tablet screen also leaves very wide option rows, so a centred 480px modal is easier to scan.
 
@@ -136,6 +137,8 @@ src/
 ├── components/
 │   ├── product/
 │   │   ├── product-view.tsx       loading / error / ready from the RTK Query hook
+│   │   ├── product-placeholder.tsx grey 4:3 placeholder with the floating-shelf drawing
+│   │   ├── product-options.tsx    options preview on the page, from the API
 │   │   └── product-details.tsx    placeholder, name, description, price, button
 │   ├── order/
 │   │   ├── order-dialog.tsx       button + <dialog>
