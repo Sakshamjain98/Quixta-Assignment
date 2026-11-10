@@ -17,7 +17,7 @@ export function Button({ variant = "primary", className, type = "button", ...pro
     <button
       type={type}
       className={cn(
-        "inline-flex min-h-12 items-center justify-center gap-2.5 rounded-lg px-6 text-base font-semibold transition-colors duration-150",
+        "inline-flex min-h-12 items-center justify-center gap-2.5 rounded-[10px] px-6 text-base font-semibold transition-colors duration-150",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
         "disabled:pointer-events-none disabled:bg-disabled disabled:text-muted",
         variants[variant],

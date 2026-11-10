@@ -18,63 +18,50 @@ export function OrderConfirmation({ product, order, onBack }: OrderConfirmationP
   const { fulfillment, extras } = getSelectedOptions(product, order);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pt-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:px-7 md:pb-7">
-      <SuccessBadge />
-      <h2 id={ORDER_DIALOG_TITLE_ID} className="mt-4 text-center text-2xl font-bold">
+    <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pt-6 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:px-7 md:pt-8 md:pb-7">
+      <span className="grid size-12 place-items-center rounded-full bg-primary text-white ring-8 ring-primary-soft">
+        <Check className="size-6" strokeWidth={2.5} aria-hidden />
+      </span>
+      <h2 id={ORDER_DIALOG_TITLE_ID} className="mt-6 text-2xl font-bold tracking-tight">
         Added to your order
       </h2>
+      <p className="mt-1 text-sm text-muted">
+        {product.name}, {formatCurrency(product.priceCents)}
+      </p>
 
-      <div className="mt-6 divide-y divide-line">
-        {fulfillment && <SummarySection title="Fulfillment" options={[fulfillment]} />}
-        {extras.length > 0 && <SummarySection title="Extras" options={extras} />}
+      {/* Receipt: what was chosen, then the total under a dashed rule. */}
+      <div className="mt-6 rounded-xl bg-primary-soft px-4 py-4">
+        {fulfillment && <ReceiptSection title="Fulfillment" options={[fulfillment]} />}
+        {extras.length > 0 && <ReceiptSection title="Extras" options={extras} />}
+        <div className="mt-4 border-t border-dashed border-line-strong pt-4">
+          <OrderTotal totalCents={getOrderTotalCents(product, order)} />
+        </div>
       </div>
 
-      <div className="mt-4 space-y-4">
-        <OrderTotal totalCents={getOrderTotalCents(product, order)} />
-        {/* autoFocus moves keyboard focus here once the form is replaced. */}
-        <Button variant="outline" className="w-full" onClick={onBack} autoFocus>
-          Back to product
-        </Button>
-      </div>
+      {/* autoFocus moves keyboard focus here once the form is replaced. */}
+      <Button variant="outline" className="mt-5 w-full" onClick={onBack} autoFocus>
+        Back to product
+      </Button>
     </div>
   );
 }
 
-function SummarySection({ title, options }: { title: string; options: ProductOption[] }) {
+function ReceiptSection({ title, options }: { title: string; options: ProductOption[] }) {
   return (
-    <section className="py-3 first:pt-0">
-      <h3 className="mb-1.5 font-semibold">{title}</h3>
-      <ul className="space-y-1.5">
+    <section className="not-first:mt-4">
+      <h3 className="text-sm text-muted">{title}</h3>
+      <ul className="mt-1.5 space-y-1.5">
         {options.map((option) => {
           const Icon = getOptionIcon(option.code);
           return (
-            <li key={option.code} className="flex items-center gap-3 pl-1">
-              <Icon className="size-5 shrink-0" strokeWidth={1.6} aria-hidden />
-              <span className="flex-1">{option.label}</span>
+            <li key={option.code} className="flex items-center gap-2.5">
+              <Icon className="size-4.5 shrink-0 text-primary" strokeWidth={1.6} aria-hidden />
+              <span className="flex-1 font-medium">{option.label}</span>
               <span className="tabular-nums">{formatCurrency(option.priceCents)}</span>
             </li>
           );
         })}
       </ul>
     </section>
-  );
-}
-
-/** Green check with a few short rays around it. Decorative. */
-function SuccessBadge() {
-  const rays = [-60, -30, 30, 60, 120, 150, 210, 240];
-  return (
-    <div aria-hidden className="relative mx-auto grid size-24 place-items-center">
-      {rays.map((deg) => (
-        <span
-          key={deg}
-          className="absolute h-1.5 w-0.5 rounded-full bg-primary/40"
-          style={{ transform: `rotate(${deg}deg) translateY(-44px)` }}
-        />
-      ))}
-      <span className="grid size-14 place-items-center rounded-full bg-[#8cc99a] text-white">
-        <Check className="size-8" strokeWidth={2.5} />
-      </span>
-    </div>
   );
 }

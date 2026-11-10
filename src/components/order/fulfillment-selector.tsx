@@ -14,14 +14,10 @@ interface FulfillmentSelectorProps {
 export function FulfillmentSelector({ options, field, error }: FulfillmentSelectorProps) {
   return (
     <fieldset aria-describedby={error ? "fulfillment-error" : undefined}>
-      <legend className="mb-2 font-semibold">
-        Fulfillment{" "}
-        <span className="text-danger" aria-hidden>
-          *
-        </span>
-        <span className="sr-only">(required)</span>
+      <legend className="mb-2.5 flex w-full items-baseline justify-between font-semibold">
+        Fulfillment <span className="text-sm font-normal text-muted">Required</span>
       </legend>
-      <div className="grid gap-2.5 md:grid-cols-2">
+      <div className="grid gap-2">
         {options.map((option) => (
           <OptionCard
             key={option.code}

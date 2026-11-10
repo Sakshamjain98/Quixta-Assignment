@@ -10,17 +10,24 @@ export function ProductView() {
 
   if (isLoading) {
     return (
-      <p role="status" className="py-16 text-center text-muted">
-        Loading product…
-      </p>
+      <div className="grid gap-7 md:grid-cols-2 md:items-center md:gap-12">
+        {/* Same footprint as the loaded page, so nothing jumps when the product arrives. */}
+        <div aria-hidden className="aspect-[4/3] w-full animate-pulse rounded-md bg-wall motion-reduce:animate-none" />
+        <p role="status" className="text-muted">
+          Loading product…
+        </p>
+      </div>
     );
   }
 
   if (isError || !product) {
     return (
-      <div role="alert" className="flex flex-col items-center gap-4 py-16 text-center">
-        <p className="text-danger">Could not load the product</p>
-        <Button onClick={() => refetch()}>Try again</Button>
+      <div role="alert" className="mx-auto flex max-w-sm flex-col items-center gap-2 py-16 text-center">
+        <p className="text-lg font-semibold text-danger">Could not load the product</p>
+        <p className="text-sm text-muted">Check your connection, then try again.</p>
+        <Button className="mt-4" onClick={() => refetch()}>
+          Try again
+        </Button>
       </div>
     );
   }

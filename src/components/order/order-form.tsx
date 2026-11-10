@@ -3,8 +3,9 @@
 import { useMemo, useState, type ChangeEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ShoppingCart, X } from "lucide-react";
+import { X } from "lucide-react";
 import type { Product } from "@/data/product";
+import { formatCurrency } from "@/lib/format-currency";
 import { createOrderSchema, getDefaultOrderValues, type Order, type OrderInput } from "@/features/order/order.schema";
 import { getOrderTotalCents, isExtraAvailable } from "@/features/order/order.calculations";
 import { Button } from "@/components/ui/button";
@@ -51,17 +52,22 @@ export function OrderForm({ product, onClose }: OrderFormProps) {
 
   return (
     <form noValidate onSubmit={handleSubmit(setSubmittedOrder)} className="flex min-h-0 flex-1 flex-col">
-      <header className="flex items-center justify-between gap-4 px-5 pt-4 pb-3 md:px-7 md:pt-6">
-        <h2 id={ORDER_DIALOG_TITLE_ID} className="text-2xl font-bold">
-          Add to order
-        </h2>
+      <header className="flex items-start justify-between gap-4 px-5 pt-4 pb-4 md:px-7 md:pt-6">
+        <div>
+          <h2 id={ORDER_DIALOG_TITLE_ID} className="text-2xl font-bold tracking-tight">
+            Add to order
+          </h2>
+          <p className="mt-0.5 text-sm text-muted">
+            {product.name}, {formatCurrency(product.priceCents)}
+          </p>
+        </div>
         {/* autoFocus: the form can mount after showModal() (lazy load), so move focus in explicitly. */}
-        <IconButton aria-label="Close" onClick={onClose} className="-mr-2.5" autoFocus>
+        <IconButton aria-label="Close" onClick={onClose} className="-mt-1 -mr-2.5" autoFocus>
           <X className="size-5" strokeWidth={1.8} aria-hidden />
         </IconButton>
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-5 py-2 md:px-7">
+      <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-5 pt-1 pb-5 md:px-7">
         <FulfillmentSelector options={product.fulfillment} field={fulfillmentField} error={errors.fulfillment?.message} />
         <ExtrasSelector
           extras={product.extras}
@@ -72,10 +78,9 @@ export function OrderForm({ product, onClose }: OrderFormProps) {
         />
       </div>
 
-      <footer className="space-y-4 px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:px-7 md:pb-7">
+      <footer className="space-y-4 border-t border-line px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:px-7 md:pb-7">
         <OrderTotal totalCents={getOrderTotalCents(product, selection)} />
         <Button type="submit" className="w-full">
-          <ShoppingCart className="size-5" strokeWidth={1.8} aria-hidden />
           Add to order
         </Button>
       </footer>

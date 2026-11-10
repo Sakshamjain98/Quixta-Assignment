@@ -1,38 +1,32 @@
 @import "tailwindcss";
 
 @theme {
-  --color-canvas: #f6f7f6;
+  --color-canvas: #ffffff;
   --color-surface: #ffffff;
-  --color-ink: #252522;
-  --color-muted: #5f5e58;
+  --color-ink: #17201b;
+  --color-muted: #5d6a62;
+  --color-line: #dce1dc;
+  /* Unselected control outlines need 3:1 against white, which --color-line can't give. */
+  --color-line-strong: #98a39b;
+  /* The grey "wall" of the image placeholder. */
+  --color-wall: #e6e7e3;
   --color-primary: #1f4d3a;
   --color-primary-hover: #173b2c;
-  --color-primary-soft: #eaf3ec;
-  --color-placeholder: #e4e6ea;
-  --color-line: #e3e6e3;
-  /* Unselected control outlines need 3:1 against white, which --color-line can't give. */
-  --color-line-strong: #a3a199;
-  --color-disabled: #d8d7d1;
+  /* Pale "linden leaf" tint for selected rows and the total. */
+  --color-primary-soft: #eef4ec;
+  --color-disabled: #d9ddd9;
   --color-danger: #b42318;
 
-  --shadow-sheet: 0 -8px 40px -12px rgb(37 37 34 / 0.25);
+  --shadow-sheet: 0 -12px 48px -16px rgb(23 32 27 / 0.28);
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-face), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   background: var(--color-canvas);
   color: var(--color-ink);
-}
-
-/* Product card: white with soft green washes in the corners, as in the design. */
-.product-card {
-  background:
-    radial-gradient(60% 80% at 100% 0%, rgb(31 77 58 / 0.06), transparent 70%),
-    radial-gradient(50% 70% at 0% 100%, rgb(31 77 58 / 0.05), transparent 70%),
-    var(--color-surface);
 }
 
 /* Keep the page from scrolling behind an open modal. */
@@ -48,16 +42,16 @@ html:has(dialog[open]) {
   background-repeat: no-repeat;
 }
 
-/* Order dialog: slides up as a bottom sheet below 768px, fades in as a centred modal from 768px. */
+/* Order dialog: slides up as a bottom sheet below 768px, rises into place as a centred modal from 768px. */
 @keyframes sheet-up { from { transform: translateY(100%); } }
-@keyframes modal-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+@keyframes modal-in { from { opacity: 0; transform: translateY(12px); } }
 @keyframes backdrop-in { from { opacity: 0; } }
 
-.order-dialog[open] { animation: sheet-up 0.35s cubic-bezier(0.32, 0.72, 0, 1); }
+.order-dialog[open] { animation: sheet-up 0.38s cubic-bezier(0.32, 0.72, 0, 1); }
 .order-dialog[open]::backdrop { animation: backdrop-in 0.25s ease-out; }
 
 @media (min-width: 768px) {
-  .order-dialog[open] { animation: modal-in 0.22s ease-out; }
+  .order-dialog[open] { animation: modal-in 0.24s cubic-bezier(0.2, 0.8, 0.2, 1); }
 }
 @media (prefers-reduced-motion: reduce) {
   .order-dialog[open],

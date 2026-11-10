@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Schibsted_Grotesk } from "next/font/google";
 import { StoreProvider } from "@/store/store-provider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const sans = Schibsted_Grotesk({
+  variable: "--font-sans-face",
   subsets: ["latin"],
 });
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="en" className={`${sans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">
         <StoreProvider>{children}</StoreProvider>
       </body>

@@ -1,7 +1,6 @@
 "use client";
 
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { ShoppingCart } from "lucide-react";
 import type { Product } from "@/data/product";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -30,12 +29,11 @@ export function OrderDialog({ product }: OrderDialogProps) {
     <>
       {/* Start the download on hover or focus, so the form is usually ready by the time of the click. */}
       <Button
-        className="w-full md:w-auto md:px-14"
+        className="w-full md:w-auto md:px-10"
         onPointerEnter={loadOrderForm}
         onFocus={loadOrderForm}
         onClick={() => setIsOpen(true)}
       >
-        <ShoppingCart className="size-5" strokeWidth={1.8} aria-hidden />
         Add to order
       </Button>
 
@@ -48,9 +46,9 @@ export function OrderDialog({ product }: OrderDialogProps) {
         className={cn(
           "order-dialog flex-col overflow-hidden bg-surface text-ink shadow-sheet open:flex backdrop:bg-black/50",
           // Below 768px: sheet fixed to the bottom, full width
-          "fixed inset-x-0 top-auto bottom-0 m-0 max-h-[92dvh] w-full max-w-none rounded-t-2xl",
+          "fixed inset-x-0 top-auto bottom-0 m-0 max-h-[92dvh] w-full max-w-none rounded-t-[20px]",
           // 768px and up: centred modal, at most 480px wide
-          "md:inset-0 md:m-auto md:h-fit md:max-h-[88dvh] md:w-[calc(100%-2rem)] md:max-w-[480px] md:rounded-2xl md:shadow-2xl",
+          "md:inset-0 md:m-auto md:h-fit md:max-h-[88dvh] md:w-[calc(100%-2rem)] md:max-w-[480px] md:rounded-[20px] md:shadow-2xl",
         )}
       >
         {/* Grab handle: signals a bottom sheet on mobile. Decorative only. */}

@@ -18,8 +18,10 @@ interface ExtrasSelectorProps {
 export function ExtrasSelector({ extras, fulfillmentOptions, fulfillment, register, errors }: ExtrasSelectorProps) {
   return (
     <fieldset>
-      <legend className="mb-2 font-semibold">Extras</legend>
-      <div className="grid gap-2.5">
+      <legend className="mb-2.5 flex w-full items-baseline justify-between font-semibold">
+        Extras <span className="text-sm font-normal text-muted">Optional</span>
+      </legend>
+      <div className="grid gap-2">
         {extras.map((extra) => {
           const required = fulfillmentOptions.find((option) => option.code === extra.requires);
           const error = errors?.[extra.code]?.message;
@@ -30,7 +32,7 @@ export function ExtrasSelector({ extras, fulfillmentOptions, fulfillment, regist
                 id={`extra-${extra.code}`}
                 type="checkbox"
                 title={extra.label}
-                description={required ? `Available only with ${required.label}` : undefined}
+                description={required ? `Only with ${required.label}` : undefined}
                 price={formatCurrency(extra.priceCents)}
                 icon={getOptionIcon(extra.code)}
                 disabled={!isExtraAvailable(extra, fulfillment)}
