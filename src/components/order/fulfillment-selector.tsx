@@ -1,30 +1,30 @@
 import type { UseFormRegisterReturn } from "react-hook-form";
-import { FULFILLMENT_KEYS, FULFILLMENT_OPTIONS } from "@/constants/product";
+import type { ProductOption } from "@/data/product";
 import { formatAddOnPrice } from "@/lib/format-currency";
 import { OptionCard } from "@/components/ui/option-card";
 import { FieldError } from "@/components/ui/field-error";
 
 interface FulfillmentSelectorProps {
+  options: ProductOption[];
   field: UseFormRegisterReturn<"fulfillment">;
   error?: string;
 }
 
-export function FulfillmentSelector({ field, error }: FulfillmentSelectorProps) {
+export function FulfillmentSelector({ options, field, error }: FulfillmentSelectorProps) {
   return (
     <fieldset aria-describedby={error ? "fulfillment-error" : undefined}>
       <legend className="mb-3 text-sm font-medium">
         Fulfillment <span className="font-normal text-muted">· required</span>
       </legend>
       <div className="grid gap-3">
-        {FULFILLMENT_KEYS.map((key) => (
+        {options.map((option) => (
           <OptionCard
-            key={key}
-            id={`fulfillment-${key}`}
+            key={option.code}
+            id={`fulfillment-${option.code}`}
             type="radio"
-            value={key}
-            title={FULFILLMENT_OPTIONS[key].label}
-            description={FULFILLMENT_OPTIONS[key].description}
-            price={formatAddOnPrice(FULFILLMENT_OPTIONS[key].price)}
+            value={option.code}
+            title={option.label}
+            price={formatAddOnPrice(option.priceCents)}
             {...field}
           />
         ))}

@@ -2,10 +2,11 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { OrderDialog } from "@/components/order/order-dialog";
+import { PRODUCT } from "@/data/product";
 
 async function openOrderDialog() {
   const user = userEvent.setup();
-  render(<OrderDialog />);
+  render(<OrderDialog product={PRODUCT} />);
   await user.click(screen.getByRole("button", { name: "Add to order" }));
   const dialog = within(await screen.findByRole("dialog"));
   return { user, dialog };
