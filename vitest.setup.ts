@@ -5,7 +5,7 @@ import { afterEach } from "vitest";
 afterEach(cleanup);
 
 // jsdom does not implement showModal/close yet. Minimal stub: no focus trap or Escape handling.
-if (!HTMLDialogElement.prototype.showModal) {
+if (typeof HTMLDialogElement !== "undefined" && !HTMLDialogElement.prototype.showModal) {
   HTMLDialogElement.prototype.showModal = function () {
     this.setAttribute("open", "");
   };
