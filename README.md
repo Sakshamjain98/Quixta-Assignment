@@ -130,7 +130,6 @@ src/
 
 ```bash
 git clone https://github.com/Sakshamjain98/Quixta-Assignment.git
-cd Quixta-Assignment
 npm install
 ```
 
