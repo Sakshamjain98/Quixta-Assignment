@@ -1,212 +1,164 @@
-# Linden Shelf — Product Ordering Experience
+# Linden shelf: product page and order sheet
 
-A responsive product page with an interactive order sheet for **Nord Atelier**, a fictional Scandinavian furniture studio.
+A single product page for the **Linden shelf**. The page loads the product and its prices from a small API inside the app. **Add to order** opens an order sheet where you choose fulfillment and extras and watch the total update live. A valid submit shows a confirmation. There is no database, account, or payment.
 
-Customers can view the Linden Shelf, pick a fulfillment option and extra services, and watch the total update live before confirming their selection.
+**Live demo:** _add the Vercel URL here_
 
-Built for a Junior Next.js Developer take-home assignment.
+## Getting started
 
-## Features
-
-### Product Page
-- Responsive navigation. On mobile it collapses into a menu built on the native `<details>` element, so it needs no JavaScript.
-- Product image, category, name, description, and price.
-- Stock status, delivery and warranty notes, and a specifications list.
-- Two-column layout from tablet width up; stacked on mobile.
-
-### Order Sheet
-- Opens from **Add to order** in a native HTML `<dialog>` with `showModal()`.
-- Layout by screen size:
-  - **Mobile (below 768px):** bottom sheet
-  - **Tablet (768px–1023px):** centered modal, with the fulfillment and extra choices centered as a group
-  - **Desktop (1024px and up):** right-side drawer, with the choices aligned to the start
-- Pickup or Delivery, shown as selectable cards built on real radio inputs.
-- Optional Assembly and Hardware kit, built on real checkboxes.
-- A price breakdown and total that update as soon as the selection changes.
-
-### Business Rules
-
-| Item | Price | Rule |
-|---|---:|---|
-| Linden Shelf | $180 | Always included |
-| Pickup | $0 | Fulfillment, choose one |
-| Delivery | $25 | Fulfillment, choose one |
-| Assembly | $40 | Available only with Delivery |
-| Hardware kit | $30 | Optional with either fulfillment |
-
-- Switching to Pickup unchecks and disables Assembly.
-- The Hardware kit stays as the user left it when fulfillment changes.
-- Prices are shown in whole US dollars, e.g. `$275`.
-
-### Validation & Confirmation
-- Validation uses React Hook Form with a Zod schema.
-- Fulfillment is required. Submitting without it shows **"Choose pickup or delivery"** under the Fulfillment group, moves focus there, and keeps the dialog open.
-- The schema rejects Assembly with Pickup on its own, even though the UI already disables that combination. That error is attached to the Assembly field.
-- A valid submit replaces the form with **"Added to your order"**, which lists the fulfillment, each selected extra, and the total. Extras that weren't selected are not listed.
-- **Back to product**, the close button, and Escape all close the dialog and reset the form.
-
-### Accessibility
-- Semantic HTML. Radios and checkboxes sit inside `<fieldset>` and `<legend>`, and each one is named by its visible title and described by its price and description.
-- The dialog has a title and traps focus. Escape closes it without adding anything, and focus returns to the trigger button afterwards.
-- Visible focus states, and touch targets of at least 44px.
-- The total is announced to screen readers through an `aria-live` `<output>`.
-- Animations are disabled when `prefers-reduced-motion` is set.
-
-## Tech Stack
-
-| Category | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| UI | React 19 |
-| Language | TypeScript (strict) |
-| Styling | Tailwind CSS v4 |
-| Form management | React Hook Form + @hookform/resolvers |
-| Validation | Zod 4 |
-| Icons | Lucide React |
-| Testing | Vitest, React Testing Library, user-event |
-| Test environment | jsdom |
-
-## Project Structure
-
-```text
-src/
-├── app/
-│   ├── layout.tsx                  fonts, navbar, footer, metadata
-│   ├── page.tsx                    product page
-│   └── globals.css                 design tokens, dialog animations
-│
-├── components/
-│   ├── layout/
-│   │   ├── navbar.tsx
-│   │   └── container.tsx
-│   │
-│   ├── product/
-│   │   ├── product-gallery.tsx
-│   │   └── product-details.tsx
-│   │
-│   ├── order/
-│   │   ├── order-dialog.tsx        trigger button + <dialog>
-│   │   ├── order-form.tsx          form state, switches to the confirmation
-│   │   ├── fulfillment-selector.tsx
-│   │   ├── additional-services.tsx
-│   │   ├── order-summary.tsx       line items + total (form and confirmation)
-│   │   ├── order-confirmation.tsx
-│   │   └── dialog-layout.ts        shared title id and content column
-│   │
-│   └── ui/
-│       ├── button.tsx
-│       ├── icon-button.tsx
-│       ├── option-card.tsx
-│       └── field-error.tsx
-│
-├── config/
-│   └── site.ts                     brand name and navigation links
-│
-├── constants/
-│   └── product.ts                  product details and all prices
-│
-├── features/
-│   └── order/
-│       ├── order.schema.ts         Zod schema and types
-│       └── order.calculations.ts   line items and total
-│
-├── lib/
-│   ├── format-currency.ts
-│   └── utils.ts
-│
-└── tests/
-    ├── order-calculations.test.ts
-    └── order-dialog.test.tsx
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js **22.23.3** (the version used during development; any Node 22 release should work)
-- npm 10.9
-
-### Installation
+Built and tested with Node.js **22.23.3** and npm **10.9.9**.
 
 ```bash
 git clone https://github.com/Sakshamjain98/Quixta-Assignment.git
 npm install
-```
-
-### Run the development server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Run tests
-
-```bash
-npm test
-```
-
-### Production build
-
-```bash
-npm run build
-npm start
-```
-
-### Lint
-
-```bash
+npm run dev        # http://localhost:3000
+npm test           # Vitest + React Testing Library (no server needed)
+npm run build      # production build
+npm start          # serve the production build
 npm run lint
 ```
 
-## Testing
+### API modes
 
-`npm test` runs 15 tests in two files.
+`GET /api/product` reads `PRODUCT_API_MODE` on every request:
 
-**`src/tests/order-dialog.test.tsx`**: component tests with React Testing Library:
+| Value | Behaviour |
+|---|---|
+| `error` | HTTP 500 with `{ "error": "unavailable" }` |
+| `slow` | waits 2 seconds, then answers normally |
+| anything else / unset | answers normally |
 
-1. **Order total** *(required)*: open the dialog, choose Delivery, check Assembly and Hardware kit, and the dialog shows **$275**.
-2. **Pickup clears Assembly** *(required)*: choose Delivery, check Assembly, then choose Pickup. Assembly is unchecked and disabled and the total is **$180**. Then check Hardware kit and submit. The confirmation is shown, lists Pickup and Hardware kit with a total of **$210**, and does not mention Assembly.
-3. **Validation**: submitting without fulfillment shows "Choose pickup or delivery", and the dialog stays open.
-4. **Form reset**: after **Back to product**, reopening the dialog shows a blank form with a total of $180.
+```bash
+PRODUCT_API_MODE=slow npm run dev    # see "Loading product…"
+PRODUCT_API_MODE=error npm run dev   # see "Could not load the product" and Try again
+```
 
-**`src/tests/order-calculations.test.ts`**: unit tests for every total in the assignment's table, the schema rules (fulfillment required, Assembly + Pickup rejected), and currency formatting.
+## Data fetching: client, cached with RTK Query
 
+The page fetches `/api/product` **on the client** through a Redux Toolkit Query endpoint (`src/store/product-api.ts`):
 
-## Design Approach
+- **Caching.** The product is fetched once and kept in the Redux store. Any component that asks for it again is served from the cache without another request, and the entry is kept for 5 minutes after the last component using it unmounts.
+- **States.** RTK Query provides the loading, error and refetch states, so `product-view.tsx` only chooses between "Loading product…", "Could not load the product" with **Try again** (which calls `refetch()`), and the product.
+- **Testing.** Tests mock `fetch` and need no running server.
+- **One store per browser session.** The store is created inside a client `StoreProvider`, so it is never shared between server requests.
 
-The design is minimal and Scandinavian-inspired: neutral colours, a warm accent, the Geist typeface, and generous spacing. The colours are defined once as Tailwind theme tokens in `globals.css`.
+The route handler returns the module `src/data/product.ts`, which is the only place prices are written. Components get the product as a prop and contain no price numbers. Prices are stored in cents and formatted as whole dollars (`$275`).
 
-- **One source of prices.** Every label and price lives in `constants/product.ts`. `getLineItems()` builds the breakdown from it, and `getOrderTotal()` adds up those same line items. The form summary, the confirmation, and the tests all use the same functions.
-- **Native dialog.** `<dialog>` with `showModal()` provides focus containment, an inert background, and Escape handling, so no dialog library is needed.
-- **Reset by unmounting.** The form only exists while the dialog is open, so closing it any way discards its state and errors.
+## How it works
 
+- **Order rules come from the data.** Each extra has `requires` (a fulfillment code or `null`). One helper, `isExtraAvailable()`, decides:
+  - whether an extra's checkbox is enabled
+  - which extras get unchecked when fulfillment changes (choosing Pickup unchecks Assembly)
+  - what the zod schema rejects
+- **Validation.** `createOrderSchema(product)` builds the zod schema from the product:
+  - Fulfillment is required. Without it, "Choose pickup or delivery" appears under the Fulfillment group and focus moves there.
+  - Assembly with Pickup is rejected even though the UI disables that checkbox. That error appears under Assembly.
+- **Totals.** `getLineItems()` builds the breakdown and `getOrderTotalCents()` adds up those same items. The live summary and the confirmation both use them.
+- **Dialog.** A native `<dialog>` opened with `showModal()`. It traps focus, makes the page behind it inert, and closes on Escape without adding anything. The form only exists while the dialog is open, so every way of closing it (Escape, ×, **Back to product**) resets the form.
+- **Controls.** Every option is a real radio or checkbox inside a `<fieldset>` with a `<legend>`. The whole row is the label, so the entire row is clickable, and each row is at least 56px tall.
 
-## Image Credits
+## Performance and security
 
-Product photo by [Annie Spratt on Unsplash](https://unsplash.com/photos/ax-KPVfTYAs), used under the [Unsplash License](https://unsplash.com/license).
+- **Lazy-loaded form.** The order form (react-hook-form, zod and the order components) is loaded with `React.lazy` only when the dialog opens. It is preloaded when the pointer hovers over the button or the button gets keyboard focus. This cut the JavaScript downloaded on first load from 207 KB to 165 KB (gzipped, measured in Chrome).
+- **Static page.** `/` is prerendered at build time. Only `/api/product` runs per request, because it reads `PRODUCT_API_MODE`.
+- **API caching.** In normal mode `/api/product` sends `Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300`, so a CDN can serve it while the browser relies on the RTK Query cache. `error` and `slow` responses send `no-store`, so every request in those modes really fails or waits.
+- **Fonts.** Geist is self-hosted through `next/font`, so there is no request to a third-party font server.
+- **Security headers** on every response (`next.config.ts`):
+  - `Content-Security-Policy`: only same-origin resources, no plugins or framing, and forms can only post to the same origin
+  - `X-Frame-Options: DENY`
+  - `X-Content-Type-Options: nosniff`
+  - `Referrer-Policy: strict-origin-when-cross-origin`
+  - `Permissions-Policy` turning off camera, microphone, geolocation and payment
+  - HSTS
+  - `X-Powered-By` removed
+- **CSP trade-off.** `script-src` allows `'unsafe-inline'` because Next.js injects inline hydration scripts. The stricter alternative, a per-request nonce, would make the page render on every request instead of being served statically. The app renders no user-supplied HTML (React escapes all text), and `npm audit --omit=dev` reports 0 vulnerabilities.
 
-## Development & AI Assistance
+## Design
 
-AI coding assistance was used during this assignment to accelerate implementation and assist with development tasks.
+| Element | Below 768px | 768px and up |
+|---|---|---|
+| Page content | Full width, 16px padding | Max 960px, centred (16px padding until 1024px) |
+| Product layout | Placeholder above the text | Placeholder left (half the width), text right |
+| Image placeholder | Grey 4:3 box, `role="img"`, named "Linden shelf" | Same |
+| Product name | 24px bold | 32px bold |
+| Shelf price | 20px | 24px |
+| Add to order | Full width, 48px tall | Fits its text, 48px tall |
+| Dialog | Sheet fixed to the bottom, full width | Centred modal, max 480px wide |
 
-**AI-assisted contributions:**
-- Generated the initial project structure and configuration.
-- Assisted in developing the product page, reusable UI components, and responsive styling.
-- Assisted with order calculation logic and form state handling.
-- Generated the initial automated tests and Vitest configuration.
-- Prepared the initial README documentation.
+Primary buttons use `#1F4D3A` with white text, and error text is `#B42318`.
 
-**My contributions:**
-- Reviewed the assignment requirements and translated them into implementation tasks.
-- Defined the UI direction, design approach, and overall application structure.
-- Guided the implementation based on the specified business rules and expected user flows.
-- Reviewed the generated components, code structure, and validation logic.
-- Reviewed and refined the UI for responsiveness, usability, and accessibility.
-- Reviewed the test cases and verified the application behaviour locally.
-- Prepared the final submission and documentation.
+**768px–1023px:** I use the desktop layout from 768px. At that width each column is about 350px wide, which fits the placeholder and the text comfortably. Stacking them would push **Add to order** below the fold on a landscape tablet. A bottom sheet stretched across a tablet screen also leaves very wide option rows, so a centred 480px modal is easier to scan.
 
-AI assistance was primarily used for code generation and development support. I reviewed and worked on the implementation and take responsibility for the final submitted code.
+## Tests
 
-**Time spent:** Approximately 3 hours, including requirement analysis, AI-assisted implementation, code review, UI refinement, and testing.
+`npm test` runs 22 tests in four files. None of them need a running server.
+
+- **`src/tests/order-dialog.test.tsx`** renders the dialog with the product data passed in:
+  1. **Total** *(required)*: choose Delivery, check Assembly and Hardware kit, and the dialog shows **$275**.
+  2. **Pickup clears Assembly** *(required)*: Delivery, then Assembly, then Pickup. Assembly is unchecked and disabled and the total is **$180**. Then Hardware kit and submit: the confirmation is shown, lists Pickup and Hardware kit with **$210**, and does not mention Assembly.
+  3. Submitting without fulfillment shows "Choose pickup or delivery", and the dialog stays open.
+  4. **Back to product** resets the form.
+- **`src/tests/product-view.test.tsx`** mocks `fetch`. It checks the loading state, then the product. It checks that a second component reading the product is served from the cache without another request. It also checks the error state, and that **Try again** requests the product again.
+- **`src/tests/product-api.test.ts`** calls the route handler directly in normal, `error`, and `slow` mode, using fake timers for the 2-second wait.
+- **`src/tests/order-calculations.test.ts`** covers every total in the brief's table, the schema rules, and money formatting.
+
+jsdom doesn't implement `HTMLDialogElement.showModal()`, so `vitest.setup.ts` adds a small stub. Native Escape and focus behaviour were checked in a real browser at 375px and 1280px.
+
+## Project structure
+
+```text
+src/
+├── app/
+│   ├── api/product/route.ts       GET /api/product (+ PRODUCT_API_MODE)
+│   ├── layout.tsx                 wraps the app in StoreProvider
+│   ├── page.tsx                   page container (max 960px)
+│   └── globals.css                colour tokens, dialog animation
+├── data/product.ts                product + prices: the only place prices live
+├── store/
+│   ├── product-api.ts             RTK Query endpoint (cache, loading, error, refetch)
+│   ├── store.ts                   configureStore
+│   └── store-provider.tsx         client Provider, one store per session
+├── features/order/
+│   ├── order.calculations.ts      line items, total, isExtraAvailable()
+│   └── order.schema.ts            zod schema built from the product
+├── components/
+│   ├── product/
+│   │   ├── product-view.tsx       loading / error / ready from the RTK Query hook
+│   │   └── product-details.tsx    placeholder, name, description, price, button
+│   ├── order/
+│   │   ├── order-dialog.tsx       button + <dialog>
+│   │   ├── order-form.tsx         react-hook-form, swaps to the confirmation
+│   │   ├── fulfillment-selector.tsx
+│   │   ├── extras-selector.tsx
+│   │   ├── order-summary.tsx
+│   │   ├── order-confirmation.tsx
+│   │   └── dialog-ids.ts
+│   └── ui/                        button, icon-button, option-card, field-error
+├── lib/                           format-currency, cn()
+└── tests/
+```
+
+## AI tools
+
+**Tools:** Claude Code (Anthropic's coding assistant), used in the terminal.
+
+**What it was used for:**
+- Scaffolding the project and configuring Vitest
+- The components and styling
+- The order calculations and the zod schema
+- The route handler, the Redux store setup, and the performance and security changes
+- The tests
+- A first draft of this README
+
+**What I did:**
+- Read the brief and turned it into tasks
+- Set the direction and structure
+- Reviewed the generated code, the validation rules, and the tests
+- Checked the app in the browser at both widths and in each API mode
+- Prepared the submission
+
+**One thing I changed or threw away:** the first version it gave me had a right-side drawer on desktop, a stock product photo, and prices hard-coded in a constants file that the components imported. I threw all three away to follow the spec: the dialog is now a centred modal of at most 480px, the image is a grey placeholder, and prices exist only in the module that `/api/product` returns. Components receive them as data.
+
+## Time spent
+
+Approximately 3.5 hours, including requirement analysis, AI-assisted implementation, code review, UI refinement, and testing.
