@@ -4,18 +4,15 @@
   --color-canvas: #f8f7f4;
   --color-surface: #ffffff;
   --color-ink: #252522;
-  /* Brief's #77766F darkened slightly to pass WCAG AA (4.5:1) for small text on the canvas. */
-  --color-muted: #6b6a63;
-  --color-accent: #a58a68;
-  --color-primary: #292923;
-  --color-line: #eae8e2;
+  --color-muted: #5f5e58;
+  --color-primary: #1f4d3a;
+  --color-primary-hover: #173b2c;
+  --color-line: #e5e3dd;
   /* Unselected control outlines need 3:1 against white, which --color-line can't give. */
   --color-line-strong: #a3a199;
-  --color-success: #397a59;
   --color-disabled: #d8d7d1;
-  --color-danger: #a3402e;
+  --color-danger: #b42318;
 
-  --shadow-soft: 0 1px 2px rgb(37 37 34 / 0.04), 0 12px 32px -8px rgb(37 37 34 / 0.1);
   --shadow-sheet: 0 -8px 40px -12px rgb(37 37 34 / 0.25);
 }
 
@@ -41,10 +38,9 @@ html:has(dialog[open]) {
   background-repeat: no-repeat;
 }
 
-/* Order dialog: bottom sheet on mobile, centered modal on tablet, right drawer on desktop. */
+/* Order dialog: slides up as a bottom sheet below 768px, fades in as a centred modal from 768px. */
 @keyframes sheet-up { from { transform: translateY(100%); } }
 @keyframes modal-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
-@keyframes drawer-in { from { transform: translateX(100%); } }
 @keyframes backdrop-in { from { opacity: 0; } }
 
 .order-dialog[open] { animation: sheet-up 0.35s cubic-bezier(0.32, 0.72, 0, 1); }
@@ -52,9 +48,6 @@ html:has(dialog[open]) {
 
 @media (min-width: 768px) {
   .order-dialog[open] { animation: modal-in 0.22s ease-out; }
-}
-@media (min-width: 1024px) {
-  .order-dialog[open] { animation: drawer-in 0.35s cubic-bezier(0.32, 0.72, 0, 1); }
 }
 @media (prefers-reduced-motion: reduce) {
   .order-dialog[open],

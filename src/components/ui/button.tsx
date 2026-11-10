@@ -6,8 +6,8 @@ export function Button({ className, type = "button", ...props }: ComponentProps<
     <button
       type={type}
       className={cn(
-        "inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-[15px] font-medium text-white shadow-sm transition-colors duration-200",
-        "hover:bg-ink/85 active:bg-ink",
+        "inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-[15px] font-medium text-white shadow-sm transition-colors duration-200",
+        "hover:bg-primary-hover",
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
         "disabled:pointer-events-none disabled:bg-disabled disabled:text-muted",
         className,
